@@ -98,7 +98,7 @@ plot_coordinates <- function(data, title, point_size, alpha, target = NULL, mean
   # Add additional components
   p <- p +
     labs(
-      title = title, 
+      # title = title, 
       x = "x", 
       y = "y"
     ) + 
@@ -189,10 +189,10 @@ ui <- fluidPage(
       sliderInput(
         "n_points",
         "Number of data points",
-        min = 200,
+        min = 100,
         max = 10000,
         value = 2000,
-        step = 200,
+        step = 100,
         ticks = FALSE
       ),
       
@@ -267,13 +267,13 @@ ui <- fluidPage(
           ticks = FALSE
         ),
         checkboxInput(
-          "means",
-          "Show target means",
+          "regression",
+          "Show regression line",
           TRUE
         ),
         checkboxInput(
-          "regression",
-          "Show regression line",
+          "means",
+          "Show target means",
           FALSE
         ),
         checkboxInput(
@@ -320,8 +320,8 @@ ui <- fluidPage(
           div(
             class = "plot-card",
             fluidRow(
-              column(6, plotOutput("before", height = "490px")),
-              column(6, plotOutput("after", height = "490px"))
+              column(6, h4("Original"), plotOutput("before", height = "490px")),
+              column(6, h4("Anscombified"), plotOutput("after", height = "490px"))
             )
           ),
           uiOutput("stat_cards"),
@@ -368,15 +368,15 @@ ui <- fluidPage(
           div(
             class = "plot-card method-copy",
             h3("Visualise your data!"),
-            p("That's the message of Anscombe's Quartet, a message that countless professors have drilled into the heads of generations of budding scientists. However, Anscombe's Quartet is boring and ugly and I'm tired of pretending it isn't. This ShinyApp converts an image of your choosing (or a lovely Labubu) into 2D coordinates and then transforms these coordinates to produce the same descriptive statistics as the original quartet. The steps are as follows:"),
+            p("That's the message of Anscombe's Quartet. It's something that professors have drilled into the heads of generations of budding scientists. Even if you're unfamiliar with the name, chances are you've seen Anscombe's Quartet before. It really is a cornerstone of statistical pedagogy. Unfortunately, it's also quite boring and ugly. Sorry! This ShinyApp turns an image of your choosing (or a lovely Labubu) into a scatterplot with the means, variances and covariance of the original quartet. The steps taken are as follows:"),
             tags$ol(
-              tags$li(strong("Process image: "), "We use the OpenCV Python library to turn the image into a binary foreground mask and finds its contours. In other words, we scan the image to identify a clear outline."),
-              tags$li(strong("Generate coordinates: "), "We generate coordinates that are evenly spaced along each contour, making sure that each contour has at least three coordinates. In other words, we generate data where our image outline is."),
-              tags$li(strong("Transform coordinates: "), "We apply an Affine transformation to the coordinates to give them the exact (or almost the exact) means, variances, and covariance we choose. In this case, we choose the same values as the original Anscombe's Quartet."),
-              tags$li(strong("Yay!: "), "Anscombe Labubu.")),
+              tags$li(strong("Process image: "), "We use the OpenCV Python library to turn the image into a binary foreground mask and derive contours. In other words, we scan the image to identify a clear outline."),
+              tags$li(strong("Generate coordinates: "), "We generate coordinates evenly spaced along the derived contours, making sure that each contour has at least three coordinates. In other words, we generate data points where our image outline is."),
+              tags$li(strong("Transform coordinates: "), "We apply an affine transformation to the coordinates to give them the means, variances, and covariance of the original Anscombe's Quartet."),
+              tags$li(strong("Yay! "), "Anscombe's Labubu.")),
             h4("Tips for a better result"),
-            p("Use an image that has a clean, high-contrast outline. Overly detailed images, such as photographs of human faces, can produce many unwanted contours. You can try playing around with the image processing settings. If you use an image resembling male human genatalia, this will be detected and law enforcement will be notified."),
-            p(tags$a(href = "https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/anscombe.html", "R’s Anscombe dataset"))
+            p("Use an image that has a clean, high-contrast outline of an object. Overly detailed images, such as photographs of human faces, can produce many unwanted contours and messy results. You can try playing around with the image processing settings. If you upload an image resembling male genatalia, this will be detected and your mother will be informed."),
+            p(tags$i("Created by Jacob Knyspel in October 2026.", tags$a(href = "https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/anscombe.html", "Contact Me")))
           )
         )
       )
@@ -526,7 +526,7 @@ server <- function(input, output, session) {
     div(
       class = "status-box status-success",
       role = "status",
-      strong("Success! "), format(nrow(r$raw), big.mark = ","), " data points created from ", r$metadata$contours_used," contours."
+      strong("Success! "), format(nrow(r$raw), big.mark = ","), " data points generated from ", r$metadata$contours_used," contours."
     )
   })
 
@@ -717,11 +717,17 @@ server <- function(input, output, session) {
         xlim = c(3, 20),
         ylim = c(2, 14)
       ) +
+      scale_x_continuous(
+        breaks = c(4,8,12,16,20)
+      ) +
+      scale_y_continuous(
+        breaks = c(4,8,12)
+      ) +
       theme_minimal(
         base_size = 13,
         base_family = "Averia Serif Libre"
       ) +
-      labs(title = "Anscombe's Quartet") +
+      # labs(title = "Anscombe's Quartet") +
       theme(
         text = element_text(colour = "#4b5782"),
         axis.text = element_text(colour = "#4b5782"),
