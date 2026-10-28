@@ -176,7 +176,8 @@ ui <- fluidPage(
       ),
       conditionalPanel(
         "input.source === 'upload'",
-        helpText("Maximum 20 MB and 40 megapixels."),
+        helpText("Upload an image that has a clean, high-contrast outline of an object, such as a black and white drawing. Maximum file size: 20 MiB. Maximum resolution: 40 megapixels (equivalent to 6324x6324). Supported formats: PNG, JPG, JPEG, WEBP, BMP, TIF, TIFF."),
+        p(""),
         fileInput(
           "image",
           "Image file",
