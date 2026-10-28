@@ -377,7 +377,7 @@ ui <- fluidPage(
               tags$li(strong("Yay! "), "Anscombe's Labubu.")),
             h4("Tips for a better result"),
             p("Use an image that has a clean, high-contrast outline of an object. Overly detailed images, such as photographs of human faces, can produce many unwanted contours and messy results. You can try playing around with the image processing settings. If you upload an image resembling male genatalia, this will be detected and your mother will be informed."),
-            p(tags$i("Created by Jacob Knyspel in October 2026.", tags$a(href = "https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/anscombe.html", "Contact Me")))
+            p(tags$i("Created by Jacob Knyspel in October 2026.", tags$a(href = "mailto:jacob.knyspel@kcl.ac.uk", "Contact Me")))
           )
         )
       )
